@@ -111,5 +111,5 @@ results = np.array(results).reshape((num_trials,len(this_train_sizes)))
 results = np.sum(results,axis=0)
 results /=num_trials
 
-json.dump(results.tolist(),open("exp_bspredmae_10sim.json","w"))
-json.dump(this_train_sizes.tolist(),open("trainsize_exp_bspredmae_10sim.json","w"))
+json.dump(results.tolist(),open("exp_perfectpredmae_10sim.json","w"))
+json.dump(this_train_sizes.tolist(),open("trainsize_exp_perfectpredmae_10sim.json","w"))
