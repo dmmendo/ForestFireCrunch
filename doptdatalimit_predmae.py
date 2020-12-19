@@ -148,7 +148,7 @@ max_val_results = np.max(val_results,axis=0)
 
 json.dump(avg_results.tolist(),open("avg_doptdatalimit30_predmae_10sim.json","w"))
 json.dump(min_results.tolist(),open("min_doptdatalimit30_predmae_10sim.json","w"))
-json.dump(max_results.tolist(),open("max_doptdatalimit30_redmae_10sim.json","w"))
+json.dump(max_results.tolist(),open("max_doptdatalimit30_predmae_10sim.json","w"))
 
 json.dump(avg_val_results.tolist(),open("avg_val_doptdatalimit30_predmae_10sim.json","w"))
 json.dump(min_val_results.tolist(),open("min_val_doptdatalimit30_predmae_10sim.json","w"))
