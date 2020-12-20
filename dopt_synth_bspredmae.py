@@ -69,15 +69,20 @@ def dopt_eval_set(num_trials,size,profile_features,labels):
   return best_set
 
 
-def get_costs(cur_reg,samples,sample_costs,eval_features,eval_labels,profile_features,labels,cur_X_train,cur_y_train,num_to_profile,available_list,start_index,num_work,K):
+def get_costs(synth_reg,samples,sample_costs,eval_features,eval_labels,profile_features,labels,cur_X_train,cur_y_train,num_to_profile,available_list,start_index,num_work,K):
   for j in range(start_index,start_index+num_work):
     new_sample_idx = samples[j][2]
     new_X_train = np.array([profile_features[idx] for idx in new_sample_idx])
     new_y_train = np.array([labels[idx] for idx in new_sample_idx])
-    reg = RandomForestRegressor(n_estimators=100).fit(np.concatenate((cur_X_train,new_X_train)),np.concatenate((cur_y_train,cur_reg.estimators_[K].predict(new_X_train))))
+    reg = RandomForestRegressor(n_estimators=100).fit(np.concatenate((cur_X_train,new_X_train)),np.concatenate((cur_y_train,synth_reg.estimators_[K].predict(new_X_train))))
     cost = mean_absolute_error(eval_labels,reg.predict(eval_features))
     sample_costs[j] = cost
-     
+
+def get_synth_predictor(profile_features,labels,eval_set,total_set,available_sample):
+  synth_train_features,synth_train_labels = gen_eval_set(profile_features,labels,eval_set.union(total_set - available_sample))
+  reg = RandomForestRegressor(n_estimators=100).fit(synth_train_features,synth_train_labels)
+  return reg
+
 def run_trial(profile_features,labels,this_train_sizes,results,val_results,n):
   print("trial",n)
   random.seed(n)
@@ -89,15 +94,16 @@ def run_trial(profile_features,labels,this_train_sizes,results,val_results,n):
   cur_reg = RandomForestRegressor(n_estimators=100).fit(cur_X_train,cur_y_train)
   results[n*len(this_train_sizes)] += mean_absolute_error(labels,cur_reg.predict(profile_features))
   eval_set = dopt_eval_set(1000000,0.1,profile_features,labels)
-  eval_features,eval_labels = gen_eval_set(profile_features,labels,eval_set.union(total_set - available_sample))
+  eval_features,eval_labels = gen_eval_set(profile_features,labels,eval_set)
   val_results[n*len(this_train_sizes)] += mean_absolute_error(eval_labels,cur_reg.predict(eval_features))
   for i in range(1,len(this_train_sizes)):
     start_t = time.time()
     num_to_profile = max(1,int(np.floor(len(labels)*(this_train_sizes[i]-this_train_sizes[i-1]))))
     available_list = shuffle(list(available_sample)) #for num_to_profile = 1
-    eval_features,eval_labels = gen_eval_set(profile_features,labels,eval_set.union(total_set - available_sample))
+    eval_features,eval_labels = gen_eval_set(profile_features,labels,eval_set)
     K = random.randint(0,99)
     samples = []
+    synth_reg = get_synth_predictor(profile_features,labels,eval_set,total_set,available_sample)
     for j in range(len(available_sample)):
       if num_to_profile == 1:
         new_sample_idx = [available_list[j]]
@@ -112,7 +118,7 @@ def run_trial(profile_features,labels,this_train_sizes,results,val_results,n):
     num_cpus = 32
     num_work = int(np.ceil(total_work/num_cpus))
     for j in range(num_cpus):
-      p = Process(target=get_costs,args=(cur_reg,samples,sample_costs,eval_features,eval_labels,profile_features,labels,cur_X_train,cur_y_train,num_to_profile,available_list,j*num_work,min(num_work,total_work),K))
+      p = Process(target=get_costs,args=(synth_reg,samples,sample_costs,eval_features,eval_labels,profile_features,labels,cur_X_train,cur_y_train,num_to_profile,available_list,j*num_work,min(num_work,total_work),K))
       p.start()
       sub_procs.append(p)
       total_work = max(0,total_work - num_work)
