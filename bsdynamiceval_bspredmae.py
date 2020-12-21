@@ -128,7 +128,7 @@ def run_trial(profile_features,labels,this_train_sizes,results,val_results,n):
     best_sample_idx = np.argmin(sample_costs)
     worst_sample_idx = np.argmax(sample_costs)
     available_sample = available_sample - set(samples[best_sample_idx][2])
-    eval_set = eval_set + set(samples[worst_sample_idx][2])
+    eval_set = eval_set.union(set(samples[worst_sample_idx][2]))
     cur_X_train = np.concatenate((cur_X_train,samples[best_sample_idx][0]))
     cur_y_train = np.concatenate((cur_y_train,samples[best_sample_idx][1]))
     cur_reg = RandomForestRegressor(n_estimators=100).fit(cur_X_train,cur_y_train)
@@ -155,13 +155,13 @@ avg_val_results = np.sum(val_results,axis=0) / num_trials
 min_val_results = np.min(val_results,axis=0)
 max_val_results = np.max(val_results,axis=0)
 
-json.dump(avg_results.tolist(),open("avg_doptsynth10_boostrapped_predmae_10sim.json","w"))
-json.dump(min_results.tolist(),open("min_doptsynth10_boostrapped_predmae_10sim.json","w"))
-json.dump(max_results.tolist(),open("max_doptsynth10_boostrapped_predmae_10sim.json","w"))
+json.dump(avg_results.tolist(),open("avg_dynamic10_boostrapped_predmae_10sim.json","w"))
+json.dump(min_results.tolist(),open("min_dynamic10_boostrapped_predmae_10sim.json","w"))
+json.dump(max_results.tolist(),open("max_dynamic10_boostrapped_predmae_10sim.json","w"))
 
-json.dump(avg_val_results.tolist(),open("avg_val_doptsynth10_boostrapped_predmae_10sim.json","w"))
-json.dump(min_val_results.tolist(),open("min_val_doptsynth10_boostrapped_predmae_10sim.json","w"))
-json.dump(max_val_results.tolist(),open("max_val_doptsynth10_boostrapped_predmae_10sim.json","w"))
+json.dump(avg_val_results.tolist(),open("avg_val_dynamic10_boostrapped_predmae_10sim.json","w"))
+json.dump(min_val_results.tolist(),open("min_val_dynamic10_boostrapped_predmae_10sim.json","w"))
+json.dump(max_val_results.tolist(),open("max_val_dynamic10_boostrapped_predmae_10sim.json","w"))
 
 
-json.dump(this_train_sizes.tolist(),open("trainsize_doptsynth10_bootstrapped_predmae_10sim.json","w"))
+json.dump(this_train_sizes.tolist(),open("trainsize_dynamic10_bootstrapped_predmae_10sim.json","w"))
