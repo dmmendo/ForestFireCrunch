@@ -149,10 +149,10 @@ def run_trial(profile_features,labels,this_train_sizes,results,val_results,n):
 
 
     ##update eval set##
-    samples = []
-    synth_reg = get_synth_predictor(profile_features,labels,eval_set,total_set,available_sample)
     eval_available_list = list(total_set - eval_set)
     if len(eval_available_list) > 0:
+      samples = []
+      synth_reg = get_synth_predictor(profile_features,labels,eval_set,total_set,available_sample)
       for j in range(len(eval_available_list)):
         if num_to_profile == 1:
           new_sample_idx = [eval_available_list[j]]
