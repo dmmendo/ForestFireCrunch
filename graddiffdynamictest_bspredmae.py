@@ -41,7 +41,7 @@ print("dataset size:",len(labels))
 
 """## Limited Data Experiments"""
 print("begin experiment")
-num_trials = 1
+num_trials = 10
 this_train_sizes = np.linspace(1/len(labels),1,len(labels))
 results = [0 for i in range(len(this_train_sizes)*num_trials)]
 results = Manager().list([0 for i in range(len(this_train_sizes)*num_trials)])
@@ -205,13 +205,13 @@ avg_val_results = np.sum(val_results,axis=0) / num_trials
 min_val_results = np.min(val_results,axis=0)
 max_val_results = np.max(val_results,axis=0)
 
-json.dump(avg_results.tolist(),open("avg_dynamictest10_boostrapped_predmae_10sim.json","w"))
-json.dump(min_results.tolist(),open("min_dynamictest10_boostrapped_predmae_10sim.json","w"))
-json.dump(max_results.tolist(),open("max_dynamictest10_boostrapped_predmae_10sim.json","w"))
+json.dump(avg_results.tolist(),open("avg_graddiffdynamictest10_boostrapped_predmae_10sim.json","w"))
+json.dump(min_results.tolist(),open("min_graddiffdynamictest10_boostrapped_predmae_10sim.json","w"))
+json.dump(max_results.tolist(),open("max_graddiffdynamictest10_boostrapped_predmae_10sim.json","w"))
 
-json.dump(avg_val_results.tolist(),open("avg_val_dynamictest10_boostrapped_predmae_10sim.json","w"))
-json.dump(min_val_results.tolist(),open("min_val_dynamictest10_boostrapped_predmae_10sim.json","w"))
-json.dump(max_val_results.tolist(),open("max_val_dynamictest10_boostrapped_predmae_10sim.json","w"))
+json.dump(avg_val_results.tolist(),open("avg_val_graddiffdynamictest10_boostrapped_predmae_10sim.json","w"))
+json.dump(min_val_results.tolist(),open("min_val_graddiffdynamictest10_boostrapped_predmae_10sim.json","w"))
+json.dump(max_val_results.tolist(),open("max_val_graddiffdynamictest10_boostrapped_predmae_10sim.json","w"))
 
 
-json.dump(this_train_sizes.tolist(),open("trainsize_dynamictest10_bootstrapped_predmae_10sim.json","w"))
+json.dump(this_train_sizes.tolist(),open("trainsize_graddiffdynamictest10_bootstrapped_predmae_10sim.json","w"))
