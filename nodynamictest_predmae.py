@@ -203,13 +203,13 @@ avg_val_results = np.sum(val_results,axis=0) / num_trials
 min_val_results = np.min(val_results,axis=0)
 max_val_results = np.max(val_results,axis=0)
 
-json.dump(avg_results.tolist(),open("avg_nodynamictest10_boostrapped_predmae_10sim.json","w"))
-json.dump(min_results.tolist(),open("min_nodynamictest10_boostrapped_predmae_10sim.json","w"))
-json.dump(max_results.tolist(),open("max_nodynamictest10_boostrapped_predmae_10sim.json","w"))
+json.dump(avg_results.tolist(),open("avg_nodynamictest10_predmae_10sim.json","w"))
+json.dump(min_results.tolist(),open("min_nodynamictest10_predmae_10sim.json","w"))
+json.dump(max_results.tolist(),open("max_nodynamictest10_predmae_10sim.json","w"))
 
-json.dump(avg_val_results.tolist(),open("avg_val_nodynamictest10_boostrapped_predmae_10sim.json","w"))
-json.dump(min_val_results.tolist(),open("min_val_nodynamictest10_boostrapped_predmae_10sim.json","w"))
-json.dump(max_val_results.tolist(),open("max_val_nodynamictest10_boostrapped_predmae_10sim.json","w"))
+json.dump(avg_val_results.tolist(),open("avg_val_nodynamictest10_predmae_10sim.json","w"))
+json.dump(min_val_results.tolist(),open("min_val_nodynamictest10_predmae_10sim.json","w"))
+json.dump(max_val_results.tolist(),open("max_val_nodynamictest10_predmae_10sim.json","w"))
 
 
-json.dump(this_train_sizes.tolist(),open("trainsize_nodynamictest10_bootstrapped_predmae_10sim.json","w"))
+json.dump(this_train_sizes.tolist(),open("trainsize_nodynamictest10_predmae_10sim.json","w"))
