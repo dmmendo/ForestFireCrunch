@@ -105,6 +105,7 @@ def run_trial(profile_features,labels,this_train_sizes,results,val_results,n):
   eval_set = dopt_eval_set(100,0.1,profile_features,labels)
   eval_features,eval_labels = gen_eval_set(profile_features,labels,eval_set)
   val_results[n*len(this_train_sizes)] = mean_absolute_error(eval_labels,cur_reg.predict(eval_features))
+  prev_cost = mean_absolute_error(eval_labels,cur_reg.predict(eval_features))
   i = len(eval_set)
   while len(total_set - eval_set) > 0 or len(available_sample) > 0:
     start_t = time.time()
@@ -122,7 +123,7 @@ def run_trial(profile_features,labels,this_train_sizes,results,val_results,n):
           new_sample_idx = random.sample(available_sample,min(num_to_profile,len(available_sample)))
         new_X_train = np.array([profile_features[idx] for idx in new_sample_idx])
         new_y_train = np.array([labels[idx] for idx in new_sample_idx])
-        samples.append((new_X_train,new_y_train,new_sample_idx)) 
+        train_samples.append((new_X_train,new_y_train,new_sample_idx)) 
       train_sample_costs = Manager().list([0 for j in range(len(available_list))])
       sub_procs = []
       total_work = len(available_list)
@@ -168,21 +169,21 @@ def run_trial(profile_features,labels,this_train_sizes,results,val_results,n):
       eval_best_sample_idx = np.argmax(eval_sample_costs)
     
     if (np.abs(train_sample_costs[train_best_sample_idx] - prev_cost) >= np.abs(eval_sample_costs[eval_best_sample_idx] - prev_cost) and len(available_sample) > 0) or len(eval_available_list) == 0:
-      available_sample = available_sample - set(train_samples[best_sample_idx][2])
-      cur_X_train = np.concatenate((cur_X_train,train_samples[best_sample_idx][0]))
-      cur_y_train = np.concatenate((cur_y_train,train_samples[best_sample_idx][1]))
+      available_sample = available_sample - set(train_samples[train_best_sample_idx][2])
+      cur_X_train = np.concatenate((cur_X_train,train_samples[train_best_sample_idx][0]))
+      cur_y_train = np.concatenate((cur_y_train,train_samples[train_best_sample_idx][1]))
       cur_reg = RandomForestRegressor(n_estimators=100).fit(cur_X_train,cur_y_train)
-      if train_samples[best_sample_idx][2][0] not in eval_set:
+      if train_samples[train_best_sample_idx][2][0] not in eval_set:
         i += 1
     else:
-      eval_set = eval_set.union(set(eval_samples[best_sample_idx][2]))
+      eval_set = eval_set.union(set(eval_samples[eval_best_sample_idx][2]))
       eval_features,eval_labels = gen_eval_set(profile_features,labels,eval_set) 
-      if eval_samples[best_sample_idx][2][0] in available_sample:
+      if eval_samples[eval_best_sample_idx][2][0] in available_sample:
         i += 1
     
     results[n*len(this_train_sizes) + i] = mean_absolute_error(labels,cur_reg.predict(profile_features))
     val_results[n*len(this_train_sizes) + i] = mean_absolute_error(eval_labels,cur_reg.predict(eval_features))
-
+    prev_cost = val_results[n*len(this_train_sizes) + i]
     print(time.time() - start_t,i,len(eval_set.union(total_set - available_sample)))
 
 procs = []
