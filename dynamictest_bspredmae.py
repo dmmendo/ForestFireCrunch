@@ -162,7 +162,7 @@ def run_trial(profile_features,labels,this_train_sizes,results,val_results,n):
         new_y_train = np.array([labels[idx] for idx in new_sample_idx])
         samples.append((new_X_train,new_y_train,new_sample_idx)) 
 
-      sample_costs = Manager().list([0 for j in range(len(available_list))])
+      sample_costs = Manager().list([0 for j in range(len(eval_available_list))])
       sub_procs = []
       total_work = len(eval_available_list)
       num_cpus = 32
